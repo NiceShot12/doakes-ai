@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doakes AI - Safety Alert System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🛡️ Doakes AI</h1>
+        <p class="subtitle">Your intelligent safety alert system - Real-time weather alerts, crime data, and safety notifications</p>
+    </header>
+
+    <div class="notification-setup" id="notification-setup">
+        <h3>🔔 Enable Alerts</h3>
+        <p>Get notified about dangers in your area via email, SMS, or browser notifications!</p>
+        
+        <div class="notification-options">
+            <div class="notif-option">
+                <label>📧 Email Alerts:</label>
+                <input type="email" id="email-input" placeholder="your@email.com" />
+            </div>
+            
+            <div class="notif-option">
+                <label>📱 SMS Alerts:</label>
+                <input type="tel" id="phone-input" placeholder="+1234567890" />
+            </div>
+            
+            <div class="notif-option">
+                <label>🔔 Browser Notifications:</label>
+                <button id="enable-browser-notif" onclick="enableBrowserNotifications()">Enable</button>
+                <span id="browser-notif-status"></span>
+            </div>
+        </div>
+        
+        <button class="save-btn" onclick="saveNotificationSettings()">Save Settings</button>
+        <button class="test-btn" onclick="testAlerts()">Test Alerts</button>
+    </div>
+
+    <div class="search-section">
+        <div class="input-group">
+            <input id="zipcode-input" type="text" placeholder="Enter ZIP code (e.g., 90210)" maxlength="5" />
+            <button id="check-btn" onclick="checkSafety()">Check Safety</button>
+        </div>
+        <p class="help-text">Or chat with Doakes AI below 👇</p>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <!-- Safety results will appear here -->
+    </div>
+
+    <div class="chat-section">
+        <div id="chat-box" class="chat-box">
+            <div class="welcome-message">
+                <p>👋 Hi! I'm Doakes AI. I can help you check for:</p>
+                <ul>
+                    <li>⛈️ Weather alerts & natural disasters</li>
+                    <li>🔒 Crime safety information</li>
+                    <li>🌤️ Current conditions</li>
+                    <li>📧 Email & SMS alerts</li>
+                </ul>
+                <p>Enable notifications above to get automatic alerts!</p>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input id="user-input" type="text" placeholder="Ask me about safety or enter a ZIP code..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden audio for alarm sound -->
+<audio id="alarm-sound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+</audio>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
