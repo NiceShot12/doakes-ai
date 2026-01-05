@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,9 +42,10 @@
 
     <div class="search-section">
         <div class="input-group">
-            <input id="zipcode-input" type="text" placeholder="Enter ZIP code (e.g., 90210)" maxlength="5" />
+            <input id="location-input" type="text" placeholder="Enter location (ZIP, city, address, street, etc.)" />
             <button id="check-btn" onclick="checkSafety()">Check Safety</button>
         </div>
+        <p class="help-text">Examples: "90210" • "New York, NY" • "123 Main St, Boston" • "Chicago"</p>
         <p class="help-text">Or chat with Doakes AI below 👇</p>
     </div>
 
@@ -61,12 +63,19 @@
                     <li>🌤️ Current conditions</li>
                     <li>📧 Email & SMS alerts</li>
                 </ul>
+                <p><strong>Try any location format:</strong></p>
+                <ul>
+                    <li>ZIP codes: "90210"</li>
+                    <li>Cities: "Los Angeles, CA"</li>
+                    <li>Addresses: "123 Main Street, Boston"</li>
+                    <li>Just city names: "Chicago"</li>
+                </ul>
                 <p>Enable notifications above to get automatic alerts!</p>
             </div>
         </div>
 
         <div class="chat-input-area">
-            <input id="user-input" type="text" placeholder="Ask me about safety or enter a ZIP code..." />
+            <input id="user-input" type="text" placeholder="Ask about any location or enter address/city/ZIP..." />
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
