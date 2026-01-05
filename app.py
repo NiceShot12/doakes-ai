@@ -11,12 +11,12 @@ app.config['APP_NAME'] = 'Doakes AI'
 
 # ============ CONFIGURATION ============
 # EMAIL SETTINGS (Using Gmail - you'll need to set this up)
-EMAIL_ENABLED = True  # Set to True after configuring
+EMAIL_ENABLED = False  # Set to True after configuring
 SENDER_EMAIL = "your-email@gmail.com"  # Change this
 SENDER_PASSWORD = "your-app-password"  # Use Gmail App Password
 
 # SMS SETTINGS (Using Twilio - optional, set to False if not using)
-SMS_ENABLED = True  # Set to True after getting Twilio credentials
+SMS_ENABLED = False  # Set to True after getting Twilio credentials
 TWILIO_ACCOUNT_SID = "your_account_sid"  # Get from Twilio
 TWILIO_AUTH_TOKEN = "your_auth_token"  # Get from Twilio
 TWILIO_PHONE_NUMBER = "+1234567890"  # Your Twilio number
@@ -127,8 +127,13 @@ def get_crime_data(state_abbr, city):
     return crime_info
 
 def send_email_alert(recipient_email, location, alerts, crime_data):
-    """Send email alert"""
+    """Send email alert with timeout protection"""
     if not EMAIL_ENABLED:
+        return False
+    
+    # Check if credentials are placeholder values
+    if SENDER_EMAIL == "your-email@gmail.com" or SENDER_PASSWORD == "your-app-password":
+        app.logger.warning("Email not configured - skipping")
         return False
     
     try:
@@ -154,7 +159,8 @@ def send_email_alert(recipient_email, location, alerts, crime_data):
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
         
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        # Add timeout to SMTP connection
+        server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.send_message(msg)
@@ -166,8 +172,13 @@ def send_email_alert(recipient_email, location, alerts, crime_data):
         return False
 
 def send_sms_alert(phone_number, location, alerts):
-    """Send SMS alert using Twilio"""
+    """Send SMS alert using Twilio with timeout protection"""
     if not SMS_ENABLED:
+        return False
+    
+    # Check if credentials are placeholder values
+    if TWILIO_ACCOUNT_SID == "your_account_sid" or TWILIO_AUTH_TOKEN == "your_auth_token":
+        app.logger.warning("SMS not configured - skipping")
         return False
     
     try:
@@ -183,6 +194,7 @@ def send_sms_alert(phone_number, location, alerts):
         
         message_body += "\nCheck the app for details. Stay safe!"
         
+        # Twilio client has built-in timeout
         message = client.messages.create(
             body=message_body,
             from_=TWILIO_PHONE_NUMBER,
