@@ -1,6 +1,6 @@
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
-const zipcodeInput = document.getElementById("zipcode-input");
+const locationInput = document.getElementById("location-input");
 const resultsContainer = document.getElementById("results-container");
 const checkBtn = document.getElementById("check-btn");
 const alarmSound = document.getElementById("alarm-sound");
@@ -119,12 +119,12 @@ function showDangerNotification(location, alerts) {
     }
 }
 
-// Check safety for ZIP code
+// Check safety for any location format
 async function checkSafety() {
-    const zipcode = zipcodeInput.value.trim();
+    const location = locationInput.value.trim();
     
-    if (!zipcode || zipcode.length !== 5 || !zipcode.match(/^\d{5}$/)) {
-        showError("Please enter a valid 5-digit ZIP code");
+    if (!location) {
+        showError("Please enter a location (ZIP code, city, address, etc.)");
         return;
     }
 
@@ -136,7 +136,7 @@ async function checkSafety() {
         const response = await fetch("/check_safety", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ zipcode })
+            body: JSON.stringify({ location: location })
         });
 
         const data = await response.json();
@@ -169,7 +169,7 @@ function displayResults(data) {
     let html = `
         <div class="results-header">
             <h2>📍 ${data.location}</h2>
-            <p class="zip-label">ZIP: ${data.zipcode}</p>
+            <p class="zip-label">Searched: ${data.original_input}</p>
         </div>
     `;
 
@@ -283,7 +283,7 @@ function appendMessage(sender, message, type) {
     senderSpan.textContent = sender + ": ";
 
     const messageSpan = document.createElement("span");
-    messageSpan.textContent = message;
+    messageSpan.innerHTML = message.replace(/\n/g, '<br>');
 
     msgDiv.appendChild(senderSpan);
     msgDiv.appendChild(messageSpan);
@@ -297,19 +297,14 @@ userInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
-zipcodeInput.addEventListener("keypress", (e) => {
+locationInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") checkSafety();
-});
-
-// Only allow numbers in ZIP code input
-zipcodeInput.addEventListener("input", (e) => {
-    e.target.value = e.target.value.replace(/\D/g, '');
 });
 
 // Auto-check for alerts every 10 minutes if user has enabled notifications
 setInterval(() => {
-    const monitoredZip = sessionStorage.getItem('monitored_zipcode');
-    if (monitoredZip && (Notification.permission === "granted")) {
+    const monitoredLocation = sessionStorage.getItem('monitored_location');
+    if (monitoredLocation && (Notification.permission === "granted")) {
         // Silently check for new alerts
         checkSafety();
     }
